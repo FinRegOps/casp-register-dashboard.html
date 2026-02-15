@@ -1,15 +1,27 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register Crypto-Asset Service Providers — Dashboard</title>
+<title>Register of Crypto-Asset Service Providers — Dashboard</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap');
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1B2A4A; }
+body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1A3C44; }
 
-.hero { width: 100%; background: linear-gradient(135deg, #1B2A4A 0%, #1E3A5F 50%, #7C3AED 100%); padding: 48px 32px 40px; display: flex; justify-content: center; }
+/* === COLOR PALETTE ===
+   Primary:    #236E7D (deep teal)
+   Secondary:  #528A97 (mid teal)
+   Dark:       #1A3C44 (near-black teal for text)
+   Light:      #6FA8B4 (light teal)
+   Pale:       #A3CDD6 (pale teal)
+   Muted:      #D4EAEF (very light teal bg)
+   Accent:     #2E9AAD (bright teal)
+   Warm:       #C47F3A (warm amber contrast)
+   Warm light: #D4A06A (light amber)
+*/
+
+.hero { width: 100%; background: linear-gradient(135deg, #1A3C44 0%, #236E7D 50%, #2E9AAD 100%); padding: 48px 32px 40px; display: flex; justify-content: center; }
 .hero-inner { max-width: 880px; width: 100%; }
 .hero-tags { display: flex; gap: 8px; margin-bottom: 14px; }
 .hero-tag { font-size: 11px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
@@ -19,60 +31,60 @@ body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1B2A4
 .container { max-width: 880px; width: 100%; padding: 0 32px; margin: 0 auto; }
 
 .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: -20px; position: relative; z-index: 1; }
-.kpi { background: #F7F8FA; border: 1px solid #E8EBF0; border-radius: 10px; padding: 16px 18px; }
+.kpi { background: #F4FAFB; border: 1px solid #D4EAEF; border-radius: 10px; padding: 16px 18px; }
 .kpi-label { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
 .kpi-value { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .kpi-sub { font-size: 12px; color: #6B7280; margin-top: 2px; }
 
-.tabs { display: flex; gap: 0; border-bottom: 1px solid #E8EBF0; margin-top: 32px; overflow-x: auto; }
+.tabs { display: flex; gap: 0; border-bottom: 1px solid #D4EAEF; margin-top: 32px; overflow-x: auto; }
 .tab-btn { padding: 10px 18px; border: none; cursor: pointer; font-size: 14px; font-family: inherit; font-weight: 600; white-space: nowrap; color: #6B7280; background: transparent; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
-.tab-btn.active { color: #3B6BCC; border-bottom-color: #3B6BCC; }
-.tab-btn:hover { color: #3B6BCC; }
+.tab-btn.active { color: #236E7D; border-bottom-color: #236E7D; }
+.tab-btn:hover { color: #236E7D; }
 
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
 .section { margin-top: 32px; }
-.section h2 { font-size: 17px; font-weight: 700; color: #1B2A4A; margin: 0 0 14px 0; }
+.section h2 { font-size: 17px; font-weight: 700; color: #1A3C44; margin: 0 0 14px 0; }
 
-.chart-box { background: #fff; border: 1px solid #E8EBF0; border-radius: 10px; padding: 20px; }
+.chart-box { background: #fff; border: 1px solid #D4EAEF; border-radius: 10px; padding: 20px; }
 
 .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.02em; }
 
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.table-wrap { border: 1px solid #E8EBF0; border-radius: 10px; overflow: hidden; }
-thead tr { background: #F7F8FA; }
-th { text-align: left; padding: 12px 16px; font-weight: 600; color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #E8EBF0; }
+.table-wrap { border: 1px solid #D4EAEF; border-radius: 10px; overflow: hidden; }
+thead tr { background: #F4FAFB; }
+th { text-align: left; padding: 12px 16px; font-weight: 600; color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #D4EAEF; }
 td { padding: 10px 16px; }
-tbody tr { border-bottom: 1px solid #E8EBF0; }
+tbody tr { border-bottom: 1px solid #D4EAEF; }
 tbody tr:last-child { border-bottom: none; }
 
-.pie-section { background: #fff; border: 1px solid #E8EBF0; border-radius: 10px; padding: 24px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+.pie-section { background: #fff; border: 1px solid #D4EAEF; border-radius: 10px; padding: 24px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
 .pie-legend-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
-.pie-legend-item:not(:last-child) { border-bottom: 1px solid #E8EBF0; }
+.pie-legend-item:not(:last-child) { border-bottom: 1px solid #D4EAEF; }
 .pie-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
 .pie-pct { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
-.bar-label { width: 120px; font-size: 13px; color: #1B2A4A; text-align: right; flex-shrink: 0; }
-.bar-track { flex: 1; height: 24px; background: #F7F8FA; border-radius: 4px; overflow: hidden; }
+.bar-label { width: 120px; font-size: 13px; color: #1A3C44; text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 24px; background: #F4FAFB; border-radius: 4px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
-.bar-val { width: 36px; font-size: 13px; font-weight: 600; color: #1B2A4A; text-align: right; }
+.bar-val { width: 36px; font-size: 13px; font-weight: 600; color: #1A3C44; text-align: right; }
 
 .vbar-container { display: flex; align-items: flex-end; gap: 8px; justify-content: center; height: 240px; padding: 0 12px; }
 .vbar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 64px; }
 .vbar-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.4s ease; min-height: 2px; }
 .vbar-label { font-size: 11px; color: #6B7280; text-align: center; line-height: 1.2; height: 28px; display: flex; align-items: center; }
-.vbar-val { font-size: 12px; font-weight: 600; color: #1B2A4A; }
+.vbar-val { font-size: 12px; font-weight: 600; color: #1A3C44; }
 
 .donut-wrap { width: 210px; height: 210px; flex-shrink: 0; position: relative; }
 .donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .donut-circle { fill: none; stroke-width: 36; }
 .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-.donut-center-val { font-size: 28px; font-weight: 700; color: #1B2A4A; }
+.donut-center-val { font-size: 28px; font-weight: 700; color: #1A3C44; }
 .donut-center-lbl { font-size: 11px; color: #6B7280; }
 
-.footer { margin-top: 40px; padding: 16px 0 32px; border-top: 1px solid #E8EBF0; display: flex; justify-content: space-between; }
+.footer { margin-top: 40px; padding: 16px 0 32px; border-top: 1px solid #D4EAEF; display: flex; justify-content: space-between; }
 .footer span { font-size: 12px; }
 
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
@@ -96,73 +108,77 @@ tbody tr:last-child { border-bottom: none; }
       <span class="hero-tag">AFM Register</span>
       <span class="hero-tag">MiCAR</span>
     </div>
-    <h1>Register Crypto-Asset Service Providers</h1>
-    <p>Overzicht van alle in Nederland geregistreerde en actieve CASPs onder MiCAR &middot; peildatum 12 februari 2026</p>
+    <h1>Register of Crypto-Asset Service Providers</h1>
+    <p>Overview of all registered and active CASPs in the Netherlands under MiCAR &middot; reference date 12 February 2026</p>
   </div>
 </div>
 
 <div class="container">
   <div class="kpi-grid">
-    <div class="kpi"><div class="kpi-label">Totaal CASPs</div><div class="kpi-value" style="color:#1B2A4A">56</div></div>
-    <div class="kpi"><div class="kpi-label">NL-vergunningen</div><div class="kpi-value" style="color:#3B6BCC">23</div><div class="kpi-sub">Art. 63 &amp; Art. 60</div></div>
-    <div class="kpi"><div class="kpi-label">Cross-border</div><div class="kpi-value" style="color:#7C3AED">32</div><div class="kpi-sub">EU-paspoort Art. 65</div></div>
-    <div class="kpi"><div class="kpi-label">Herkomstlanden</div><div class="kpi-value" style="color:#D4883A">8</div><div class="kpi-sub">incl. Nederland</div></div>
+    <div class="kpi"><div class="kpi-label">Total CASPs</div><div class="kpi-value" style="color:#1A3C44">56</div></div>
+    <div class="kpi"><div class="kpi-label">NL Authorisations</div><div class="kpi-value" style="color:#236E7D">23</div><div class="kpi-sub">Art. 63 &amp; Art. 60</div></div>
+    <div class="kpi"><div class="kpi-label">Cross-border</div><div class="kpi-value" style="color:#528A97">32</div><div class="kpi-sub">EU passport Art. 65</div></div>
+    <div class="kpi"><div class="kpi-label">Countries of origin</div><div class="kpi-value" style="color:#C47F3A">8</div><div class="kpi-sub">incl. the Netherlands</div></div>
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview')">Overzicht</button>
-    <button class="tab-btn" onclick="switchTab('nl')">NL-vergunningen</button>
+    <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="switchTab('nl')">NL Authorisations</button>
     <button class="tab-btn" onclick="switchTab('crossborder')">Cross-border</button>
-    <button class="tab-btn" onclick="switchTab('diensten')">Diensten</button>
+    <button class="tab-btn" onclick="switchTab('services')">Services</button>
   </div>
 
   <!-- OVERVIEW -->
   <div id="tab-overview" class="tab-content active">
     <div class="section">
-      <h2>Verdeling vergunningtype</h2>
+      <h2>Breakdown by authorisation type</h2>
       <div class="pie-section">
         <div class="donut-wrap">
           <svg class="donut-svg" viewBox="0 0 200 200">
-            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#3B6BCC" stroke-dasharray="294.4 515.2" stroke-dashoffset="0"/>
-            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#1B2A4A" stroke-dasharray="183.9 515.2" stroke-dashoffset="-294.4"/>
-            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#D4883A" stroke-dasharray="36.6 515.2" stroke-dashoffset="-478.3"/>
+            <!-- Total circumference = 2*PI*82 = 515.2 -->
+            <!-- Cross-border 32/56 = 57.1% = 294.4 -->
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#528A97" stroke-dasharray="294.4 515.2" stroke-dashoffset="0"/>
+            <!-- Art 63: 20/56 = 35.7% = 183.9 -->
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#236E7D" stroke-dasharray="183.9 515.2" stroke-dashoffset="-294.4"/>
+            <!-- Art 60: 4/56 = 7.1% = 36.6 -->
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#C47F3A" stroke-dasharray="36.6 515.2" stroke-dashoffset="-478.3"/>
           </svg>
-          <div class="donut-center"><div class="donut-center-val">56</div><div class="donut-center-lbl">totaal</div></div>
+          <div class="donut-center"><div class="donut-center-val">56</div><div class="donut-center-lbl">total</div></div>
         </div>
         <div style="flex:1; min-width:260px">
           <div class="pie-legend-item">
-            <span class="pie-dot" style="background:#3B6BCC"></span>
-            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">Cross-border (Art. 65)</div><div style="font-size:12px;color:#6B7280">32 partijen</div></div>
-            <div class="pie-pct" style="color:#3B6BCC">57%</div>
+            <span class="pie-dot" style="background:#528A97"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1A3C44">Cross-border (Art. 65)</div><div style="font-size:12px;color:#6B7280">32 providers</div></div>
+            <div class="pie-pct" style="color:#528A97">57%</div>
           </div>
           <div class="pie-legend-item">
-            <span class="pie-dot" style="background:#1B2A4A"></span>
-            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">CASP Authorisation (Art. 63)</div><div style="font-size:12px;color:#6B7280">20 partijen</div></div>
-            <div class="pie-pct" style="color:#1B2A4A">36%</div>
+            <span class="pie-dot" style="background:#236E7D"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1A3C44">CASP Authorisation (Art. 63)</div><div style="font-size:12px;color:#6B7280">20 providers</div></div>
+            <div class="pie-pct" style="color:#236E7D">36%</div>
           </div>
           <div class="pie-legend-item">
-            <span class="pie-dot" style="background:#D4883A"></span>
-            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">CASP Notification (Art. 60)</div><div style="font-size:12px;color:#6B7280">4 partijen</div></div>
-            <div class="pie-pct" style="color:#D4883A">7%</div>
+            <span class="pie-dot" style="background:#C47F3A"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1A3C44">CASP Notification (Art. 60)</div><div style="font-size:12px;color:#6B7280">4 providers</div></div>
+            <div class="pie-pct" style="color:#C47F3A">7%</div>
           </div>
         </div>
       </div>
     </div>
     <div class="section">
-      <h2>Cross-border: herkomst per EU-lidstaat</h2>
+      <h2>Cross-border: country of origin per EU member state</h2>
       <div class="chart-box"><div class="vbar-container" id="origin-chart"></div></div>
-      <p class="note">Duitsland is veruit het belangrijkste herkomstland voor cross-border CASPs, gevolgd door Frankrijk en Malta.</p>
+      <p class="note">Germany is by far the leading country of origin for cross-border CASPs, followed by France and Malta.</p>
     </div>
   </div>
 
-  <!-- NL -->
+  <!-- NL AUTHORISATIONS -->
   <div id="tab-nl" class="tab-content">
     <div class="section">
-      <h2>Nederlandse CASP-vergunninghouders (23)</h2>
-      <div class="table-wrap"><table><thead><tr><th>#</th><th>Naam</th><th>Type</th></tr></thead><tbody id="nl-tbody"></tbody></table></div>
+      <h2>Dutch CASP authorisation holders (23)</h2>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Type</th></tr></thead><tbody id="nl-tbody"></tbody></table></div>
       <div class="grid-2">
-        <div class="kpi"><div class="kpi-label">Art. 63 — Vergunning</div><div class="kpi-value" style="color:#3B6BCC">19</div><div class="kpi-sub">volledige MiCAR-vergunning</div></div>
-        <div class="kpi"><div class="kpi-label">Art. 60 — Notificatie</div><div class="kpi-value" style="color:#D4883A">4</div><div class="kpi-sub">overgangsregeling bestaande partijen</div></div>
+        <div class="kpi"><div class="kpi-label">Art. 63 — Authorisation</div><div class="kpi-value" style="color:#236E7D">19</div><div class="kpi-sub">full MiCAR authorisation</div></div>
+        <div class="kpi"><div class="kpi-label">Art. 60 — Notification</div><div class="kpi-value" style="color:#C47F3A">4</div><div class="kpi-sub">transitional regime for existing providers</div></div>
       </div>
     </div>
   </div>
@@ -170,38 +186,38 @@ tbody tr:last-child { border-bottom: none; }
   <!-- CROSS-BORDER -->
   <div id="tab-crossborder" class="tab-content">
     <div class="section">
-      <h2>Cross-border CASPs actief in Nederland (32)</h2>
-      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Selectie van de belangrijkste cross-border partijen met EU-paspoort (Art. 65 MiCAR).</p>
-      <div class="table-wrap"><table><thead><tr><th>Handelsnaam</th><th>Entiteit</th><th>Herkomst</th></tr></thead><tbody id="cb-tbody"></tbody></table></div>
+      <h2>Cross-border CASPs active in the Netherlands (32)</h2>
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Selection of the most prominent cross-border providers with an EU passport (Art. 65 MiCAR).</p>
+      <div class="table-wrap"><table><thead><tr><th>Trade name</th><th>Entity</th><th>Home country</th></tr></thead><tbody id="cb-tbody"></tbody></table></div>
     </div>
   </div>
 
-  <!-- DIENSTEN -->
-  <div id="tab-diensten" class="tab-content">
+  <!-- SERVICES -->
+  <div id="tab-services" class="tab-content">
     <div class="section">
-      <h2>Crypto-asset diensten (Art. 3(1)(16) MiCAR)</h2>
-      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Aantal CASPs dat elke dienst aanbiedt. Meerdere diensten per partij mogelijk.</p>
+      <h2>Crypto-asset services (Art. 3(1)(16) MiCAR)</h2>
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Number of CASPs offering each service. Multiple services per provider possible.</p>
       <div class="chart-box" id="services-chart"></div>
       <div class="grid-3">
-        <div class="kpi"><div class="kpi-label">Meest aangeboden</div><div class="kpi-value" style="color:#2E7D5B">Custody</div><div class="kpi-sub">&amp; transfer services (42&times;)</div></div>
-        <div class="kpi"><div class="kpi-label">Exchange diensten</div><div class="kpi-value" style="color:#3B6BCC">34</div><div class="kpi-sub">crypto-to-fiat</div></div>
-        <div class="kpi"><div class="kpi-label">Minst aangeboden</div><div class="kpi-value" style="color:#D4883A">Advies</div><div class="kpi-sub">slechts 4 partijen</div></div>
+        <div class="kpi"><div class="kpi-label">Most offered</div><div class="kpi-value" style="color:#236E7D">Custody</div><div class="kpi-sub">&amp; transfer services (42&times;)</div></div>
+        <div class="kpi"><div class="kpi-label">Exchange services</div><div class="kpi-value" style="color:#528A97">34</div><div class="kpi-sub">crypto-to-fiat</div></div>
+        <div class="kpi"><div class="kpi-label">Least offered</div><div class="kpi-value" style="color:#C47F3A">Advice</div><div class="kpi-sub">only 4 providers</div></div>
       </div>
     </div>
   </div>
 
   <div class="footer">
-    <span style="color:#6B7280">Bron: AFM Register Crypto-Asset Service Providers</span>
-    <span style="color:#d1d5db">Peildatum: 12 feb 2026</span>
+    <span style="color:#6B7280">Source: AFM Register of Crypto-Asset Service Providers</span>
+    <span style="color:#d1d5db">Reference date: 12 Feb 2026</span>
   </div>
 </div>
 
 <script>
 var nlCasps=[{n:"MoonPay Europe B.V.",t:"Art. 63"},{n:"BitStaete B.V.",t:"Art. 63"},{n:"Zebedee Europe B.V.",t:"Art. 63"},{n:"Hidden Road Partners CIV NL B.V.",t:"Art. 60"},{n:"AvianLabs Netherlands B.V.",t:"Art. 63"},{n:"Vivid Money B.V.",t:"Art. 63"},{n:"One Trading Exchange B.V.",t:"Art. 63"},{n:"Acheron Europe B.V.",t:"Art. 60"},{n:"BTC Direct Europe B.V.",t:"Art. 63"},{n:"Bitvavo B.V.",t:"Art. 63"},{n:"Amdax B.V.",t:"Art. 63"},{n:"Finst B.V.",t:"Art. 63"},{n:"Decubate B.V.",t:"Art. 63"},{n:"Fiat Republic Netherlands B.V.",t:"Art. 63"},{n:"BLOX B.V.",t:"Art. 63"},{n:"EU Internet Ventures B.V. (BNXA)",t:"Art. 63"},{n:"Zerohash Europe B.V.",t:"Art. 63"},{n:"Coinmerce B.V.",t:"Art. 63"},{n:"Bitmymoney B.V.",t:"Art. 63"},{n:"Bitonic B.V.",t:"Art. 63"},{n:"Blockrise Capital B.V.",t:"Art. 60"},{n:"Monflo B.V.",t:"Art. 60"},{n:"WEB3 Technology B.V.",t:"Art. 63"}];
 
-var cbCasps=[{n:"OKX",e:"OKCoin Europe LTD",h:"Malta"},{n:"Crypto.com",e:"Foris DAX MT Limited",h:"Malta"},{n:"eToro",e:"eToro (Europe) Ltd",h:"Cyprus"},{n:"Bitpanda",e:"Bitpanda GmbH",h:"Oostenrijk"},{n:"Trade Republic",e:"Trade Republic Bank GmbH",h:"Duitsland"},{n:"Bitstamp",e:"Bitstamp Europe S.A.",h:"Luxemburg"},{n:"Bybit",e:"Bybit EU GmbH",h:"Oostenrijk"},{n:"Coinbase",e:"Coinbase Luxembourg S.A.",h:"Luxemburg"},{n:"Kraken",e:"Payward Europe Solutions Ltd",h:"Ierland"},{n:"Robinhood",e:"Robinhood Europe, UAB",h:"Litouwen"},{n:"Gemini",e:"Gemini Intergalactic EU Ltd",h:"Malta"},{n:"Gate",e:"Gate Technology Limited",h:"Malta"},{n:"Clearstream",e:"Clearstream Banking S.A.",h:"Luxemburg"},{n:"FlatexDEGIRO",e:"FlatexDEGIRO Bank AG",h:"Duitsland"},{n:"Crypto Finance",e:"Crypto Finance (DE) GmbH",h:"Duitsland"}];
+var cbCasps=[{n:"OKX",e:"OKCoin Europe LTD",h:"Malta"},{n:"Crypto.com",e:"Foris DAX MT Limited",h:"Malta"},{n:"eToro",e:"eToro (Europe) Ltd",h:"Cyprus"},{n:"Bitpanda",e:"Bitpanda GmbH",h:"Austria"},{n:"Trade Republic",e:"Trade Republic Bank GmbH",h:"Germany"},{n:"Bitstamp",e:"Bitstamp Europe S.A.",h:"Luxembourg"},{n:"Bybit",e:"Bybit EU GmbH",h:"Austria"},{n:"Coinbase",e:"Coinbase Luxembourg S.A.",h:"Luxembourg"},{n:"Kraken",e:"Payward Europe Solutions Ltd",h:"Ireland"},{n:"Robinhood",e:"Robinhood Europe, UAB",h:"Lithuania"},{n:"Gemini",e:"Gemini Intergalactic EU Ltd",h:"Malta"},{n:"Gate",e:"Gate Technology Limited",h:"Malta"},{n:"Clearstream",e:"Clearstream Banking S.A.",h:"Luxembourg"},{n:"FlatexDEGIRO",e:"FlatexDEGIRO Bank AG",h:"Germany"},{n:"Crypto Finance",e:"Crypto Finance (DE) GmbH",h:"Germany"}];
 
-var originData=[{n:"Duitsland",v:11},{n:"Frankrijk",v:7},{n:"Malta",v:6},{n:"Luxemburg",v:3},{n:"Oostenrijk",v:2},{n:"Cyprus",v:1},{n:"Litouwen",v:1},{n:"Ierland",v:1}];
+var originData=[{n:"Germany",v:11},{n:"France",v:7},{n:"Malta",v:6},{n:"Luxembourg",v:3},{n:"Austria",v:2},{n:"Cyprus",v:1},{n:"Lithuania",v:1},{n:"Ireland",v:1}];
 
 var servicesData=[{s:"Custody",v:42},{s:"Transfer",v:42},{s:"Crypto/fiat",v:34},{s:"Execution",v:32},{s:"Crypto/crypto",v:28},{s:"R&T orders",v:15},{s:"Placing",v:10},{s:"Portfolio",v:9},{s:"Trading platform",v:8},{s:"Advice",v:4}];
 
@@ -209,7 +225,7 @@ function switchTab(name){
   document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active')});
   document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.remove('active')});
   document.getElementById('tab-'+name).classList.add('active');
-  var map={overview:'Overzicht',nl:'NL-vergunningen',crossborder:'Cross-border',diensten:'Diensten'};
+  var map={overview:'Overview',nl:'NL Authorisations',crossborder:'Cross-border',services:'Services'};
   document.querySelectorAll('.tab-btn').forEach(function(b){if(b.textContent===map[name])b.classList.add('active')});
 }
 
@@ -217,8 +233,8 @@ function switchTab(name){
 var tb1=document.getElementById('nl-tbody');
 nlCasps.forEach(function(c,i){
   var tr=document.createElement('tr');
-  var col=c.t==='Art. 63'?'#3B6BCC':'#D4883A';
-  tr.innerHTML='<td style="color:#6B7280;font-size:13px">'+(i+1)+'</td><td style="font-weight:600;color:#1B2A4A">'+c.n+'</td><td><span class="badge" style="color:'+col+';background:'+col+'14">'+c.t+'</span></td>';
+  var col=c.t==='Art. 63'?'#236E7D':'#C47F3A';
+  tr.innerHTML='<td style="color:#6B7280;font-size:13px">'+(i+1)+'</td><td style="font-weight:600;color:#1A3C44">'+c.n+'</td><td><span class="badge" style="color:'+col+';background:'+col+'14">'+c.t+'</span></td>';
   tb1.appendChild(tr);
 });
 
@@ -226,7 +242,7 @@ nlCasps.forEach(function(c,i){
 var tb2=document.getElementById('cb-tbody');
 cbCasps.forEach(function(c){
   var tr=document.createElement('tr');
-  tr.innerHTML='<td style="font-weight:700;color:#1B2A4A">'+c.n+'</td><td style="color:#6B7280;font-size:13px">'+c.e+'</td><td><span class="badge" style="color:#7C3AED;background:#7C3AED14">'+c.h+'</span></td>';
+  tr.innerHTML='<td style="font-weight:700;color:#1A3C44">'+c.n+'</td><td style="color:#6B7280;font-size:13px">'+c.e+'</td><td><span class="badge" style="color:#528A97;background:#528A9714">'+c.h+'</span></td>';
   tb2.appendChild(tr);
 });
 
@@ -235,7 +251,7 @@ var oc=document.getElementById('origin-chart');
 originData.forEach(function(d){
   var col=document.createElement('div');col.className='vbar-col';
   var pct=(d.v/11)*200;
-  col.innerHTML='<div class="vbar-val">'+d.v+'</div><div class="vbar-bar" style="height:'+pct+'px;background:#7C3AED"></div><div class="vbar-label">'+d.n+'</div>';
+  col.innerHTML='<div class="vbar-val">'+d.v+'</div><div class="vbar-bar" style="height:'+pct+'px;background:#528A97"></div><div class="vbar-label">'+d.n+'</div>';
   oc.appendChild(col);
 });
 
@@ -244,7 +260,7 @@ var sc=document.getElementById('services-chart');
 servicesData.forEach(function(d){
   var row=document.createElement('div');row.className='bar-row';
   var pct=(d.v/42)*100;
-  row.innerHTML='<div class="bar-label">'+d.s+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:#2E7D5B"></div></div><div class="bar-val">'+d.v+'</div>';
+  row.innerHTML='<div class="bar-label">'+d.s+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:#236E7D"></div></div><div class="bar-val">'+d.v+'</div>';
   sc.appendChild(row);
 });
 </script>
