@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register Crypto-Asset Service Providers — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1B2A4A; }
@@ -16,7 +15,9 @@
 </head>
 <body>
 <div id="root"></div>
-<script type="text/babel">
+<script>
+// Short alias
+const h = React.createElement;
 const { useState } = React;
 const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;
 
@@ -28,14 +29,14 @@ const authTypeData = [
 ];
 
 const originData = [
-  { name: "Duitsland", value: 11, flag: "🇩🇪" },
-  { name: "Frankrijk", value: 7, flag: "🇫🇷" },
-  { name: "Malta", value: 6, flag: "🇲🇹" },
-  { name: "Luxemburg", value: 3, flag: "🇱🇺" },
-  { name: "Oostenrijk", value: 2, flag: "🇦🇹" },
-  { name: "Cyprus", value: 1, flag: "🇨🇾" },
-  { name: "Litouwen", value: 1, flag: "🇱🇹" },
-  { name: "Ierland", value: 1, flag: "🇮🇪" },
+  { name: "Duitsland", value: 11 },
+  { name: "Frankrijk", value: 7 },
+  { name: "Malta", value: 6 },
+  { name: "Luxemburg", value: 3 },
+  { name: "Oostenrijk", value: 2 },
+  { name: "Cyprus", value: 1 },
+  { name: "Litouwen", value: 1 },
+  { name: "Ierland", value: 1 },
 ];
 
 const servicesData = [
@@ -102,252 +103,255 @@ const C = {
 };
 
 const PIE_COLORS = [C.accent, C.navy, C.warm];
-const fmtFull = (v) => new Intl.NumberFormat("nl-NL").format(v);
+const fmtFull = function(v) { return new Intl.NumberFormat("nl-NL").format(v); };
 
-function ChartTooltip({ active, payload, label }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div style={{ background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" }}>
-      <div style={{ fontWeight: 700, color: C.text, marginBottom: 4 }}>{label}</div>
-      {payload.map((p, i) => (
-        <div key={i} style={{ color: C.textSub }}>{p.name === "value" ? "Aantal" : p.name}: <span style={{ fontWeight: 600, color: C.text }}>{fmtFull(p.value)}</span></div>
-      ))}
-    </div>
+// === COMPONENTS ===
+
+function ChartTooltip(props) {
+  if (!props.active || !props.payload || !props.payload.length) return null;
+  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" } },
+    h("div", { style: { fontWeight: 700, color: C.text, marginBottom: 4 } }, props.label),
+    props.payload.map(function(p, i) {
+      return h("div", { key: i, style: { color: C.textSub } },
+        (p.name === "value" ? "Aantal" : p.name) + ": ",
+        h("span", { style: { fontWeight: 600, color: C.text } }, fmtFull(p.value))
+      );
+    })
   );
 }
 
-function PieTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div style={{ background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" }}>
-      <div style={{ fontWeight: 700, color: C.text }}>{payload[0].name}</div>
-      <div style={{ color: C.textSub }}>{payload[0].value} partijen ({Math.round(payload[0].value / 56 * 100)}%)</div>
-    </div>
+function PieTooltip(props) {
+  if (!props.active || !props.payload || !props.payload.length) return null;
+  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" } },
+    h("div", { style: { fontWeight: 700, color: C.text } }, props.payload[0].name),
+    h("div", { style: { color: C.textSub } }, props.payload[0].value + " partijen (" + Math.round(props.payload[0].value / 56 * 100) + "%)")
   );
 }
 
-function KPI({ label, value, sub, color }) {
-  return (
-    <div style={{ background: C.light, border: "1px solid " + C.border, borderRadius: 10, padding: "16px 18px" }}>
-      <div style={{ fontSize: 11, color: C.textSub, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{label}</div>
-      <div style={{ fontSize: 24, fontWeight: 700, color: color || C.text, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: C.textSub, marginTop: 2 }}>{sub}</div>}
-    </div>
+function KPI(props) {
+  return h("div", { style: { background: C.light, border: "1px solid " + C.border, borderRadius: 10, padding: "16px 18px" } },
+    h("div", { style: { fontSize: 11, color: C.textSub, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 } }, props.label),
+    h("div", { style: { fontSize: 24, fontWeight: 700, color: props.color || C.text, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" } }, props.value),
+    props.sub ? h("div", { style: { fontSize: 12, color: C.textSub, marginTop: 2 } }, props.sub) : null
   );
 }
 
-function Section({ title, children }) {
-  return (
-    <div style={{ marginTop: 32 }}>
-      <h2 style={{ fontSize: 17, fontWeight: 700, color: C.text, margin: "0 0 14px 0" }}>{title}</h2>
-      {children}
-    </div>
+function Section(props) {
+  return h("div", { style: { marginTop: 32 } },
+    h("h2", { style: { fontSize: 17, fontWeight: 700, color: C.text, margin: "0 0 14px 0" } }, props.title),
+    props.children
   );
 }
 
-function ChartBox({ children, height }) {
-  return (
-    <div style={{ background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: "20px 12px 12px 0" }}>
-      <ResponsiveContainer width="100%" height={height || 340}>{children}</ResponsiveContainer>
-    </div>
+function ChartBox(props) {
+  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: "20px 12px 12px 0" } },
+    h(ResponsiveContainer, { width: "100%", height: props.height || 340 }, props.children)
   );
 }
 
-function Badge({ text, color }) {
-  return (
-    <span style={{ display: "inline-block", fontSize: 11, fontWeight: 600, color: color, background: color + "14", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.02em" }}>{text}</span>
+function Badge(props) {
+  return h("span", { style: { display: "inline-block", fontSize: 11, fontWeight: 600, color: props.color, background: props.color + "14", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.02em" } }, props.text);
+}
+
+// Table header cell helper
+function Th(text) {
+  return h("th", { style: { textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border } }, text);
+}
+
+// === TAB CONTENT ===
+
+function OverviewTab() {
+  return h("div", null,
+    // Pie chart section
+    h(Section, { title: "Verdeling vergunningtype" },
+      h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: 24, display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" } },
+        h("div", { style: { width: 210, height: 210, flexShrink: 0 } },
+          h(ResponsiveContainer, { width: "100%", height: "100%" },
+            h(PieChart, null,
+              h(Pie, { data: authTypeData, dataKey: "value", cx: "50%", cy: "50%", outerRadius: 88, innerRadius: 52, paddingAngle: 4, strokeWidth: 0 },
+                authTypeData.map(function(_, i) { return h(Cell, { key: i, fill: PIE_COLORS[i] }); })
+              ),
+              h(Tooltip, { content: h(PieTooltip) })
+            )
+          )
+        ),
+        h("div", { style: { flex: 1, minWidth: 260 } },
+          authTypeData.map(function(d, i) {
+            return h("div", { key: i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 2 ? "1px solid " + C.border : "none" } },
+              h("span", { style: { width: 10, height: 10, borderRadius: 3, background: PIE_COLORS[i], flexShrink: 0 } }),
+              h("div", { style: { flex: 1 } },
+                h("div", { style: { fontSize: 14, fontWeight: 600, color: C.text } }, d.name),
+                h("div", { style: { fontSize: 12, color: C.textSub } }, d.value + " partijen")
+              ),
+              h("div", { style: { fontSize: 20, fontWeight: 700, color: PIE_COLORS[i], fontVariantNumeric: "tabular-nums" } }, Math.round(d.value / 56 * 100) + "%")
+            );
+          })
+        )
+      )
+    ),
+    // Origin bar chart
+    h(Section, { title: "Cross-border: herkomst per EU-lidstaat" },
+      h(ChartBox, { height: 300 },
+        h(BarChart, { data: originData, margin: { top: 8, right: 16, left: 8, bottom: 4 } },
+          h(CartesianGrid, { strokeDasharray: "3 3", stroke: C.border, vertical: false }),
+          h(XAxis, { dataKey: "name", tick: { fill: C.textSub, fontSize: 12 }, tickLine: false, axisLine: { stroke: C.border } }),
+          h(YAxis, { tick: { fill: C.textSub, fontSize: 11 }, tickLine: false, axisLine: false, width: 30, allowDecimals: false }),
+          h(Tooltip, { content: h(ChartTooltip) }),
+          h(Bar, { dataKey: "value", name: "CASPs", fill: C.purple, radius: [4, 4, 0, 0], maxBarSize: 48 })
+        )
+      ),
+      h("p", { style: { fontSize: 13, color: C.textSub, marginTop: 8 } }, "Duitsland is veruit het belangrijkste herkomstland voor cross-border CASPs, gevolgd door Frankrijk en Malta.")
+    )
   );
 }
+
+function NLTab() {
+  return h("div", null,
+    h(Section, { title: "Nederlandse CASP-vergunninghouders (23)" },
+      h("div", { style: { border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" } },
+        h("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14 } },
+          h("thead", null,
+            h("tr", { style: { background: C.light } }, Th("#"), Th("Naam"), Th("Type"))
+          ),
+          h("tbody", null,
+            nlCasps.map(function(c, i) {
+              return h("tr", { key: i, style: { borderBottom: i < nlCasps.length - 1 ? "1px solid " + C.border : "none" } },
+                h("td", { style: { padding: "10px 16px", color: C.textSub, fontSize: 13 } }, i + 1),
+                h("td", { style: { padding: "10px 16px", fontWeight: 600, color: C.text } }, c.name),
+                h("td", { style: { padding: "10px 16px" } },
+                  h(Badge, { text: c.type, color: c.type === "Art. 63" ? C.accent : C.warm })
+                )
+              );
+            })
+          )
+        )
+      ),
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginTop: 16 } },
+        h(KPI, { label: "Art. 63 \u2014 Vergunning", value: "19", sub: "volledige MiCAR-vergunning", color: C.accent }),
+        h(KPI, { label: "Art. 60 \u2014 Notificatie", value: "4", sub: "overgangsregeling bestaande partijen", color: C.warm })
+      )
+    )
+  );
+}
+
+function CrossBorderTab() {
+  return h("div", null,
+    h(Section, { title: "Cross-border CASPs actief in Nederland (32)" },
+      h("p", { style: { fontSize: 14, color: C.textSub, marginBottom: 16 } }, "Selectie van de belangrijkste cross-border partijen met EU-paspoort (Art. 65 MiCAR)."),
+      h("div", { style: { border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" } },
+        h("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14 } },
+          h("thead", null,
+            h("tr", { style: { background: C.light } }, Th("Handelsnaam"), Th("Entiteit"), Th("Herkomst"))
+          ),
+          h("tbody", null,
+            cbCasps.map(function(c, i) {
+              return h("tr", { key: i, style: { borderBottom: i < cbCasps.length - 1 ? "1px solid " + C.border : "none" } },
+                h("td", { style: { padding: "10px 16px", fontWeight: 700, color: C.text } }, c.name),
+                h("td", { style: { padding: "10px 16px", color: C.textSub, fontSize: 13 } }, c.entity),
+                h("td", { style: { padding: "10px 16px" } },
+                  h(Badge, { text: c.home, color: C.purple })
+                )
+              );
+            })
+          )
+        )
+      )
+    )
+  );
+}
+
+function DienstenTab() {
+  return h("div", null,
+    h(Section, { title: "Crypto-asset diensten (Art. 3(1)(16) MiCAR)" },
+      h("p", { style: { fontSize: 14, color: C.textSub, marginBottom: 16 } }, "Aantal CASPs dat elke dienst aanbiedt. Meerdere diensten per partij mogelijk."),
+      h(ChartBox, { height: 400 },
+        h(BarChart, { data: servicesData, layout: "vertical", margin: { top: 4, right: 24, left: 8, bottom: 4 } },
+          h(CartesianGrid, { strokeDasharray: "3 3", stroke: C.border, horizontal: false }),
+          h(XAxis, { type: "number", tick: { fill: C.textSub, fontSize: 11 }, tickLine: false, axisLine: { stroke: C.border }, allowDecimals: false }),
+          h(YAxis, { dataKey: "short", type: "category", width: 120, tick: { fill: C.text, fontSize: 12 }, tickLine: false, axisLine: false }),
+          h(Tooltip, { content: h(ChartTooltip) }),
+          h(Bar, { dataKey: "value", name: "CASPs", fill: C.green, radius: [0, 4, 4, 0], maxBarSize: 26 })
+        )
+      ),
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 16 } },
+        h(KPI, { label: "Meest aangeboden", value: "Custody", sub: "& transfer services (42\u00D7)", color: C.green }),
+        h(KPI, { label: "Exchange diensten", value: "34", sub: "crypto-to-fiat", color: C.accent }),
+        h(KPI, { label: "Minst aangeboden", value: "Advies", sub: "slechts 4 partijen", color: C.warm })
+      )
+    )
+  );
+}
+
+// === MAIN APP ===
 
 function App() {
-  const [tab, setTab] = useState("overview");
-  const tabs = [
+  var tabState = useState("overview");
+  var tab = tabState[0];
+  var setTab = tabState[1];
+
+  var tabs = [
     { key: "overview", label: "Overzicht" },
     { key: "nl", label: "NL-vergunningen" },
     { key: "crossborder", label: "Cross-border" },
     { key: "diensten", label: "Diensten" },
   ];
 
-  return (
-    <div style={{ minHeight: "100vh", background: "#fff", fontFamily: "'Source Sans 3', sans-serif", color: C.text, display: "flex", flexDirection: "column", alignItems: "center" }}>
+  return h("div", { style: { minHeight: "100vh", background: "#fff", fontFamily: "'Source Sans 3', sans-serif", color: C.text, display: "flex", flexDirection: "column", alignItems: "center" } },
 
-      {/* Hero */}
-      <div style={{ width: "100%", background: "linear-gradient(135deg, " + C.navy + " 0%, #1E3A5F 50%, " + C.purple + " 100%)", padding: "48px 32px 40px", display: "flex", justifyContent: "center" }}>
-        <div style={{ maxWidth: 880, width: "100%" }}>
-          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" }}>AFM Register</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" }}>MiCAR</span>
-          </div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, color: "#fff", margin: "0 0 8px 0", letterSpacing: "-0.02em", lineHeight: 1.2 }}>Register Crypto-Asset Service Providers</h1>
-          <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 15, margin: 0 }}>Overzicht van alle in Nederland geregistreerde en actieve CASPs onder MiCAR · peildatum 12 februari 2026</p>
-        </div>
-      </div>
+    // Hero
+    h("div", { style: { width: "100%", background: "linear-gradient(135deg, " + C.navy + " 0%, #1E3A5F 50%, " + C.purple + " 100%)", padding: "48px 32px 40px", display: "flex", justifyContent: "center" } },
+      h("div", { style: { maxWidth: 880, width: "100%" } },
+        h("div", { style: { display: "flex", gap: 8, marginBottom: 14 } },
+          h("span", { style: { fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" } }, "AFM Register"),
+          h("span", { style: { fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" } }, "MiCAR")
+        ),
+        h("h1", { style: { fontSize: 28, fontWeight: 700, color: "#fff", margin: "0 0 8px 0", letterSpacing: "-0.02em", lineHeight: 1.2 } }, "Register Crypto-Asset Service Providers"),
+        h("p", { style: { color: "rgba(255,255,255,0.7)", fontSize: 15, margin: 0 } }, "Overzicht van alle in Nederland geregistreerde en actieve CASPs onder MiCAR \u00B7 peildatum 12 februari 2026")
+      )
+    ),
 
-      <div style={{ maxWidth: 880, width: "100%", padding: "0 32px" }}>
-        {/* KPIs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: -20, position: "relative", zIndex: 1 }}>
-          <KPI label="Totaal CASPs" value="56" color={C.navy} />
-          <KPI label="NL-vergunningen" value="23" sub="Art. 63 & Art. 60" color={C.accent} />
-          <KPI label="Cross-border" value="32" sub="EU-paspoort Art. 65" color={C.purple} />
-          <KPI label="Herkomstlanden" value="8" sub="incl. Nederland" color={C.warm} />
-        </div>
+    h("div", { style: { maxWidth: 880, width: "100%", padding: "0 32px" } },
 
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: 0, borderBottom: "1px solid " + C.border, marginTop: 32, overflowX: "auto" }}>
-          {tabs.map((t) => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{
+      // KPIs
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: -20, position: "relative", zIndex: 1 } },
+        h(KPI, { label: "Totaal CASPs", value: "56", color: C.navy }),
+        h(KPI, { label: "NL-vergunningen", value: "23", sub: "Art. 63 & Art. 60", color: C.accent }),
+        h(KPI, { label: "Cross-border", value: "32", sub: "EU-paspoort Art. 65", color: C.purple }),
+        h(KPI, { label: "Herkomstlanden", value: "8", sub: "incl. Nederland", color: C.warm })
+      ),
+
+      // Tabs
+      h("div", { style: { display: "flex", gap: 0, borderBottom: "1px solid " + C.border, marginTop: 32, overflowX: "auto" } },
+        tabs.map(function(t) {
+          return h("button", {
+            key: t.key,
+            onClick: function() { setTab(t.key); },
+            style: {
               padding: "10px 18px", border: "none", cursor: "pointer", fontSize: 14, fontFamily: "inherit", fontWeight: 600, whiteSpace: "nowrap",
               color: tab === t.key ? C.accent : C.textSub, background: "transparent",
               borderBottom: tab === t.key ? "2px solid " + C.accent : "2px solid transparent",
               marginBottom: -1, transition: "all 0.15s",
-            }}>{t.label}</button>
-          ))}
-        </div>
+            }
+          }, t.label);
+        })
+      ),
 
-        {/* ===== OVERVIEW ===== */}
-        {tab === "overview" && (
-          <div>
-            <Section title="Verdeling vergunningtype">
-              <div style={{ background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: 24, display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" }}>
-                <div style={{ width: 210, height: 210, flexShrink: 0 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={authTypeData} dataKey="value" cx="50%" cy="50%" outerRadius={88} innerRadius={52} paddingAngle={4} strokeWidth={0}>
-                        {authTypeData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
-                      </Pie>
-                      <Tooltip content={<PieTooltip />} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div style={{ flex: 1, minWidth: 260 }}>
-                  {authTypeData.map((d, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 2 ? "1px solid " + C.border : "none" }}>
-                      <span style={{ width: 10, height: 10, borderRadius: 3, background: PIE_COLORS[i], flexShrink: 0 }} />
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{d.name}</div>
-                        <div style={{ fontSize: 12, color: C.textSub }}>{d.value} partijen</div>
-                      </div>
-                      <div style={{ fontSize: 20, fontWeight: 700, color: PIE_COLORS[i], fontVariantNumeric: "tabular-nums" }}>{Math.round(d.value / 56 * 100)}%</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Section>
+      // Tab content
+      tab === "overview" ? h(OverviewTab) : null,
+      tab === "nl" ? h(NLTab) : null,
+      tab === "crossborder" ? h(CrossBorderTab) : null,
+      tab === "diensten" ? h(DienstenTab) : null,
 
-            <Section title="Cross-border: herkomst per EU-lidstaat">
-              <ChartBox height={300}>
-                <BarChart data={originData} margin={{ top: 8, right: 16, left: 8, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: C.textSub, fontSize: 12 }} tickLine={false} axisLine={{ stroke: C.border }} />
-                  <YAxis tick={{ fill: C.textSub, fontSize: 11 }} tickLine={false} axisLine={false} width={30} allowDecimals={false} />
-                  <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="value" name="CASPs" fill={C.purple} radius={[4, 4, 0, 0]} maxBarSize={48} />
-                </BarChart>
-              </ChartBox>
-              <p style={{ fontSize: 13, color: C.textSub, marginTop: 8 }}>Duitsland is veruit het belangrijkste herkomstland voor cross-border CASPs, gevolgd door Frankrijk en Malta.</p>
-            </Section>
-          </div>
-        )}
-
-        {/* ===== NL VERGUNNINGEN ===== */}
-        {tab === "nl" && (
-          <div>
-            <Section title="Nederlandse CASP-vergunninghouders (23)">
-              <div style={{ border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-                  <thead>
-                    <tr style={{ background: C.light }}>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>#</th>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>Naam</th>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {nlCasps.map((c, i) => (
-                      <tr key={i} style={{ borderBottom: i < nlCasps.length - 1 ? "1px solid " + C.border : "none" }}>
-                        <td style={{ padding: "10px 16px", color: C.textSub, fontSize: 13 }}>{i + 1}</td>
-                        <td style={{ padding: "10px 16px", fontWeight: 600, color: C.text }}>{c.name}</td>
-                        <td style={{ padding: "10px 16px" }}>
-                          <Badge text={c.type} color={c.type === "Art. 63" ? C.accent : C.warm} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginTop: 16 }}>
-                <KPI label="Art. 63 — Vergunning" value="19" sub="volledige MiCAR-vergunning" color={C.accent} />
-                <KPI label="Art. 60 — Notificatie" value="4" sub="overgangsregeling bestaande partijen" color={C.warm} />
-              </div>
-            </Section>
-          </div>
-        )}
-
-        {/* ===== CROSS-BORDER ===== */}
-        {tab === "crossborder" && (
-          <div>
-            <Section title="Cross-border CASPs actief in Nederland (32)">
-              <p style={{ fontSize: 14, color: C.textSub, marginBottom: 16 }}>Selectie van de belangrijkste cross-border partijen met EU-paspoort (Art. 65 MiCAR).</p>
-              <div style={{ border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-                  <thead>
-                    <tr style={{ background: C.light }}>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>Handelsnaam</th>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>Entiteit</th>
-                      <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border }}>Herkomst</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cbCasps.map((c, i) => (
-                      <tr key={i} style={{ borderBottom: i < cbCasps.length - 1 ? "1px solid " + C.border : "none" }}>
-                        <td style={{ padding: "10px 16px", fontWeight: 700, color: C.text }}>{c.name}</td>
-                        <td style={{ padding: "10px 16px", color: C.textSub, fontSize: 13 }}>{c.entity}</td>
-                        <td style={{ padding: "10px 16px" }}>
-                          <Badge text={c.home} color={C.purple} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Section>
-          </div>
-        )}
-
-        {/* ===== DIENSTEN ===== */}
-        {tab === "diensten" && (
-          <div>
-            <Section title="Crypto-asset diensten (Art. 3(1)(16) MiCAR)">
-              <p style={{ fontSize: 14, color: C.textSub, marginBottom: 16 }}>Aantal CASPs dat elke dienst aanbiedt. Meerdere diensten per partij mogelijk.</p>
-              <ChartBox height={400}>
-                <BarChart data={servicesData} layout="vertical" margin={{ top: 4, right: 24, left: 8, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} horizontal={false} />
-                  <XAxis type="number" tick={{ fill: C.textSub, fontSize: 11 }} tickLine={false} axisLine={{ stroke: C.border }} allowDecimals={false} />
-                  <YAxis dataKey="short" type="category" width={120} tick={{ fill: C.text, fontSize: 12 }} tickLine={false} axisLine={false} />
-                  <Tooltip content={<ChartTooltip />} />
-                  <Bar dataKey="value" name="CASPs" fill={C.green} radius={[0, 4, 4, 0]} maxBarSize={26} />
-                </BarChart>
-              </ChartBox>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 16 }}>
-                <KPI label="Meest aangeboden" value="Custody" sub="& transfer services (42×)" color={C.green} />
-                <KPI label="Exchange diensten" value="34" sub="crypto-to-fiat" color={C.accent} />
-                <KPI label="Minst aangeboden" value="Advies" sub="slechts 4 partijen" color={C.warm} />
-              </div>
-            </Section>
-          </div>
-        )}
-
-        {/* Footer */}
-        <div style={{ marginTop: 40, paddingTop: 16, paddingBottom: 32, borderTop: "1px solid " + C.border, display: "flex", justifyContent: "space-between" }}>
-          <span style={{ fontSize: 12, color: C.textSub }}>Bron: AFM Register Crypto-Asset Service Providers</span>
-          <span style={{ fontSize: 12, color: "#d1d5db" }}>Peildatum: 12 feb 2026</span>
-        </div>
-      </div>
-    </div>
+      // Footer
+      h("div", { style: { marginTop: 40, paddingTop: 16, paddingBottom: 32, borderTop: "1px solid " + C.border, display: "flex", justifyContent: "space-between" } },
+        h("span", { style: { fontSize: 12, color: C.textSub } }, "Bron: AFM Register Crypto-Asset Service Providers"),
+        h("span", { style: { fontSize: 12, color: "#d1d5db" } }, "Peildatum: 12 feb 2026")
+      )
+    )
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
 </script>
 </body>
 </html>
