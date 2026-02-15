@@ -4,354 +4,249 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register Crypto-Asset Service Providers — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.8.0/Recharts.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1B2A4A; }
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Source Sans 3', sans-serif; background: #fff; color: #1B2A4A; }
+
+.hero { width: 100%; background: linear-gradient(135deg, #1B2A4A 0%, #1E3A5F 50%, #7C3AED 100%); padding: 48px 32px 40px; display: flex; justify-content: center; }
+.hero-inner { max-width: 880px; width: 100%; }
+.hero-tags { display: flex; gap: 8px; margin-bottom: 14px; }
+.hero-tag { font-size: 11px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+.hero h1 { font-size: 28px; font-weight: 700; color: #fff; margin: 0 0 8px 0; letter-spacing: -0.02em; line-height: 1.2; }
+.hero p { color: rgba(255,255,255,0.7); font-size: 15px; margin: 0; }
+
+.container { max-width: 880px; width: 100%; padding: 0 32px; margin: 0 auto; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: -20px; position: relative; z-index: 1; }
+.kpi { background: #F7F8FA; border: 1px solid #E8EBF0; border-radius: 10px; padding: 16px 18px; }
+.kpi-label { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.kpi-value { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.kpi-sub { font-size: 12px; color: #6B7280; margin-top: 2px; }
+
+.tabs { display: flex; gap: 0; border-bottom: 1px solid #E8EBF0; margin-top: 32px; overflow-x: auto; }
+.tab-btn { padding: 10px 18px; border: none; cursor: pointer; font-size: 14px; font-family: inherit; font-weight: 600; white-space: nowrap; color: #6B7280; background: transparent; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+.tab-btn.active { color: #3B6BCC; border-bottom-color: #3B6BCC; }
+.tab-btn:hover { color: #3B6BCC; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.section { margin-top: 32px; }
+.section h2 { font-size: 17px; font-weight: 700; color: #1B2A4A; margin: 0 0 14px 0; }
+
+.chart-box { background: #fff; border: 1px solid #E8EBF0; border-radius: 10px; padding: 20px; }
+
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.02em; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table-wrap { border: 1px solid #E8EBF0; border-radius: 10px; overflow: hidden; }
+thead tr { background: #F7F8FA; }
+th { text-align: left; padding: 12px 16px; font-weight: 600; color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #E8EBF0; }
+td { padding: 10px 16px; }
+tbody tr { border-bottom: 1px solid #E8EBF0; }
+tbody tr:last-child { border-bottom: none; }
+
+.pie-section { background: #fff; border: 1px solid #E8EBF0; border-radius: 10px; padding: 24px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+.pie-legend-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.pie-legend-item:not(:last-child) { border-bottom: 1px solid #E8EBF0; }
+.pie-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.pie-pct { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.bar-label { width: 120px; font-size: 13px; color: #1B2A4A; text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 24px; background: #F7F8FA; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.bar-val { width: 36px; font-size: 13px; font-weight: 600; color: #1B2A4A; text-align: right; }
+
+.vbar-container { display: flex; align-items: flex-end; gap: 8px; justify-content: center; height: 240px; padding: 0 12px; }
+.vbar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 64px; }
+.vbar-bar { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.4s ease; min-height: 2px; }
+.vbar-label { font-size: 11px; color: #6B7280; text-align: center; line-height: 1.2; height: 28px; display: flex; align-items: center; }
+.vbar-val { font-size: 12px; font-weight: 600; color: #1B2A4A; }
+
+.donut-wrap { width: 210px; height: 210px; flex-shrink: 0; position: relative; }
+.donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut-circle { fill: none; stroke-width: 36; }
+.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.donut-center-val { font-size: 28px; font-weight: 700; color: #1B2A4A; }
+.donut-center-lbl { font-size: 11px; color: #6B7280; }
+
+.footer { margin-top: 40px; padding: 16px 0 32px; border-top: 1px solid #E8EBF0; display: flex; justify-content: space-between; }
+.footer span { font-size: 12px; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.note { font-size: 13px; color: #6B7280; margin-top: 8px; }
+
+@media (max-width: 700px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: 1fr; }
+  .pie-section { flex-direction: column; }
+  .hero h1 { font-size: 22px; }
+  .container { padding: 0 16px; }
+}
 </style>
 </head>
 <body>
-<div id="root"></div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tags">
+      <span class="hero-tag">AFM Register</span>
+      <span class="hero-tag">MiCAR</span>
+    </div>
+    <h1>Register Crypto-Asset Service Providers</h1>
+    <p>Overzicht van alle in Nederland geregistreerde en actieve CASPs onder MiCAR &middot; peildatum 12 februari 2026</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">Totaal CASPs</div><div class="kpi-value" style="color:#1B2A4A">56</div></div>
+    <div class="kpi"><div class="kpi-label">NL-vergunningen</div><div class="kpi-value" style="color:#3B6BCC">23</div><div class="kpi-sub">Art. 63 &amp; Art. 60</div></div>
+    <div class="kpi"><div class="kpi-label">Cross-border</div><div class="kpi-value" style="color:#7C3AED">32</div><div class="kpi-sub">EU-paspoort Art. 65</div></div>
+    <div class="kpi"><div class="kpi-label">Herkomstlanden</div><div class="kpi-value" style="color:#D4883A">8</div><div class="kpi-sub">incl. Nederland</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">Overzicht</button>
+    <button class="tab-btn" onclick="switchTab('nl')">NL-vergunningen</button>
+    <button class="tab-btn" onclick="switchTab('crossborder')">Cross-border</button>
+    <button class="tab-btn" onclick="switchTab('diensten')">Diensten</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="tab-overview" class="tab-content active">
+    <div class="section">
+      <h2>Verdeling vergunningtype</h2>
+      <div class="pie-section">
+        <div class="donut-wrap">
+          <svg class="donut-svg" viewBox="0 0 200 200">
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#3B6BCC" stroke-dasharray="294.4 515.2" stroke-dashoffset="0"/>
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#1B2A4A" stroke-dasharray="183.9 515.2" stroke-dashoffset="-294.4"/>
+            <circle class="donut-circle" cx="100" cy="100" r="82" stroke="#D4883A" stroke-dasharray="36.6 515.2" stroke-dashoffset="-478.3"/>
+          </svg>
+          <div class="donut-center"><div class="donut-center-val">56</div><div class="donut-center-lbl">totaal</div></div>
+        </div>
+        <div style="flex:1; min-width:260px">
+          <div class="pie-legend-item">
+            <span class="pie-dot" style="background:#3B6BCC"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">Cross-border (Art. 65)</div><div style="font-size:12px;color:#6B7280">32 partijen</div></div>
+            <div class="pie-pct" style="color:#3B6BCC">57%</div>
+          </div>
+          <div class="pie-legend-item">
+            <span class="pie-dot" style="background:#1B2A4A"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">CASP Authorisation (Art. 63)</div><div style="font-size:12px;color:#6B7280">20 partijen</div></div>
+            <div class="pie-pct" style="color:#1B2A4A">36%</div>
+          </div>
+          <div class="pie-legend-item">
+            <span class="pie-dot" style="background:#D4883A"></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#1B2A4A">CASP Notification (Art. 60)</div><div style="font-size:12px;color:#6B7280">4 partijen</div></div>
+            <div class="pie-pct" style="color:#D4883A">7%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Cross-border: herkomst per EU-lidstaat</h2>
+      <div class="chart-box"><div class="vbar-container" id="origin-chart"></div></div>
+      <p class="note">Duitsland is veruit het belangrijkste herkomstland voor cross-border CASPs, gevolgd door Frankrijk en Malta.</p>
+    </div>
+  </div>
+
+  <!-- NL -->
+  <div id="tab-nl" class="tab-content">
+    <div class="section">
+      <h2>Nederlandse CASP-vergunninghouders (23)</h2>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Naam</th><th>Type</th></tr></thead><tbody id="nl-tbody"></tbody></table></div>
+      <div class="grid-2">
+        <div class="kpi"><div class="kpi-label">Art. 63 — Vergunning</div><div class="kpi-value" style="color:#3B6BCC">19</div><div class="kpi-sub">volledige MiCAR-vergunning</div></div>
+        <div class="kpi"><div class="kpi-label">Art. 60 — Notificatie</div><div class="kpi-value" style="color:#D4883A">4</div><div class="kpi-sub">overgangsregeling bestaande partijen</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CROSS-BORDER -->
+  <div id="tab-crossborder" class="tab-content">
+    <div class="section">
+      <h2>Cross-border CASPs actief in Nederland (32)</h2>
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Selectie van de belangrijkste cross-border partijen met EU-paspoort (Art. 65 MiCAR).</p>
+      <div class="table-wrap"><table><thead><tr><th>Handelsnaam</th><th>Entiteit</th><th>Herkomst</th></tr></thead><tbody id="cb-tbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- DIENSTEN -->
+  <div id="tab-diensten" class="tab-content">
+    <div class="section">
+      <h2>Crypto-asset diensten (Art. 3(1)(16) MiCAR)</h2>
+      <p style="font-size:14px;color:#6B7280;margin-bottom:16px">Aantal CASPs dat elke dienst aanbiedt. Meerdere diensten per partij mogelijk.</p>
+      <div class="chart-box" id="services-chart"></div>
+      <div class="grid-3">
+        <div class="kpi"><div class="kpi-label">Meest aangeboden</div><div class="kpi-value" style="color:#2E7D5B">Custody</div><div class="kpi-sub">&amp; transfer services (42&times;)</div></div>
+        <div class="kpi"><div class="kpi-label">Exchange diensten</div><div class="kpi-value" style="color:#3B6BCC">34</div><div class="kpi-sub">crypto-to-fiat</div></div>
+        <div class="kpi"><div class="kpi-label">Minst aangeboden</div><div class="kpi-value" style="color:#D4883A">Advies</div><div class="kpi-sub">slechts 4 partijen</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span style="color:#6B7280">Bron: AFM Register Crypto-Asset Service Providers</span>
+    <span style="color:#d1d5db">Peildatum: 12 feb 2026</span>
+  </div>
+</div>
+
 <script>
-// Short alias
-const h = React.createElement;
-const { useState } = React;
-const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } = Recharts;
+var nlCasps=[{n:"MoonPay Europe B.V.",t:"Art. 63"},{n:"BitStaete B.V.",t:"Art. 63"},{n:"Zebedee Europe B.V.",t:"Art. 63"},{n:"Hidden Road Partners CIV NL B.V.",t:"Art. 60"},{n:"AvianLabs Netherlands B.V.",t:"Art. 63"},{n:"Vivid Money B.V.",t:"Art. 63"},{n:"One Trading Exchange B.V.",t:"Art. 63"},{n:"Acheron Europe B.V.",t:"Art. 60"},{n:"BTC Direct Europe B.V.",t:"Art. 63"},{n:"Bitvavo B.V.",t:"Art. 63"},{n:"Amdax B.V.",t:"Art. 63"},{n:"Finst B.V.",t:"Art. 63"},{n:"Decubate B.V.",t:"Art. 63"},{n:"Fiat Republic Netherlands B.V.",t:"Art. 63"},{n:"BLOX B.V.",t:"Art. 63"},{n:"EU Internet Ventures B.V. (BNXA)",t:"Art. 63"},{n:"Zerohash Europe B.V.",t:"Art. 63"},{n:"Coinmerce B.V.",t:"Art. 63"},{n:"Bitmymoney B.V.",t:"Art. 63"},{n:"Bitonic B.V.",t:"Art. 63"},{n:"Blockrise Capital B.V.",t:"Art. 60"},{n:"Monflo B.V.",t:"Art. 60"},{n:"WEB3 Technology B.V.",t:"Art. 63"}];
 
-// === DATA ===
-const authTypeData = [
-  { name: "Cross-border (Art. 65)", value: 32 },
-  { name: "CASP Authorisation (Art. 63)", value: 20 },
-  { name: "CASP Notification (Art. 60)", value: 4 },
-];
+var cbCasps=[{n:"OKX",e:"OKCoin Europe LTD",h:"Malta"},{n:"Crypto.com",e:"Foris DAX MT Limited",h:"Malta"},{n:"eToro",e:"eToro (Europe) Ltd",h:"Cyprus"},{n:"Bitpanda",e:"Bitpanda GmbH",h:"Oostenrijk"},{n:"Trade Republic",e:"Trade Republic Bank GmbH",h:"Duitsland"},{n:"Bitstamp",e:"Bitstamp Europe S.A.",h:"Luxemburg"},{n:"Bybit",e:"Bybit EU GmbH",h:"Oostenrijk"},{n:"Coinbase",e:"Coinbase Luxembourg S.A.",h:"Luxemburg"},{n:"Kraken",e:"Payward Europe Solutions Ltd",h:"Ierland"},{n:"Robinhood",e:"Robinhood Europe, UAB",h:"Litouwen"},{n:"Gemini",e:"Gemini Intergalactic EU Ltd",h:"Malta"},{n:"Gate",e:"Gate Technology Limited",h:"Malta"},{n:"Clearstream",e:"Clearstream Banking S.A.",h:"Luxemburg"},{n:"FlatexDEGIRO",e:"FlatexDEGIRO Bank AG",h:"Duitsland"},{n:"Crypto Finance",e:"Crypto Finance (DE) GmbH",h:"Duitsland"}];
 
-const originData = [
-  { name: "Duitsland", value: 11 },
-  { name: "Frankrijk", value: 7 },
-  { name: "Malta", value: 6 },
-  { name: "Luxemburg", value: 3 },
-  { name: "Oostenrijk", value: 2 },
-  { name: "Cyprus", value: 1 },
-  { name: "Litouwen", value: 1 },
-  { name: "Ierland", value: 1 },
-];
+var originData=[{n:"Duitsland",v:11},{n:"Frankrijk",v:7},{n:"Malta",v:6},{n:"Luxemburg",v:3},{n:"Oostenrijk",v:2},{n:"Cyprus",v:1},{n:"Litouwen",v:1},{n:"Ierland",v:1}];
 
-const servicesData = [
-  { name: "(a) Custody & administration", short: "Custody", value: 42 },
-  { name: "(j) Transfer services", short: "Transfer", value: 42 },
-  { name: "(c) Exchange crypto/fiat", short: "Crypto/fiat", value: 34 },
-  { name: "(e) Order execution", short: "Execution", value: 32 },
-  { name: "(d) Exchange crypto/crypto", short: "Crypto/crypto", value: 28 },
-  { name: "(g) Reception & transmission", short: "R&T orders", value: 15 },
-  { name: "(f) Placing", short: "Placing", value: 10 },
-  { name: "(i) Portfolio management", short: "Portfolio", value: 9 },
-  { name: "(b) Trading platform", short: "Trading platform", value: 8 },
-  { name: "(h) Advice", short: "Advice", value: 4 },
-];
+var servicesData=[{s:"Custody",v:42},{s:"Transfer",v:42},{s:"Crypto/fiat",v:34},{s:"Execution",v:32},{s:"Crypto/crypto",v:28},{s:"R&T orders",v:15},{s:"Placing",v:10},{s:"Portfolio",v:9},{s:"Trading platform",v:8},{s:"Advice",v:4}];
 
-const nlCasps = [
-  { name: "MoonPay Europe B.V.", type: "Art. 63" },
-  { name: "BitStaete B.V.", type: "Art. 63" },
-  { name: "Zebedee Europe B.V.", type: "Art. 63" },
-  { name: "Hidden Road Partners CIV NL B.V.", type: "Art. 60" },
-  { name: "AvianLabs Netherlands B.V.", type: "Art. 63" },
-  { name: "Vivid Money B.V.", type: "Art. 63" },
-  { name: "One Trading Exchange B.V.", type: "Art. 63" },
-  { name: "Acheron Europe B.V.", type: "Art. 60" },
-  { name: "BTC Direct Europe B.V.", type: "Art. 63" },
-  { name: "Bitvavo B.V.", type: "Art. 63" },
-  { name: "Amdax B.V.", type: "Art. 63" },
-  { name: "Finst B.V.", type: "Art. 63" },
-  { name: "Decubate B.V.", type: "Art. 63" },
-  { name: "Fiat Republic Netherlands B.V.", type: "Art. 63" },
-  { name: "BLOX B.V.", type: "Art. 63" },
-  { name: "EU Internet Ventures B.V. (BNXA)", type: "Art. 63" },
-  { name: "Zerohash Europe B.V.", type: "Art. 63" },
-  { name: "Coinmerce B.V.", type: "Art. 63" },
-  { name: "Bitmymoney B.V.", type: "Art. 63" },
-  { name: "Bitonic B.V.", type: "Art. 63" },
-  { name: "Blockrise Capital B.V.", type: "Art. 60" },
-  { name: "Monflo B.V.", type: "Art. 60" },
-  { name: "WEB3 Technology B.V.", type: "Art. 63" },
-];
-
-const cbCasps = [
-  { name: "OKX", entity: "OKCoin Europe LTD", home: "Malta" },
-  { name: "Crypto.com", entity: "Foris DAX MT Limited", home: "Malta" },
-  { name: "eToro", entity: "eToro (Europe) Ltd", home: "Cyprus" },
-  { name: "Bitpanda", entity: "Bitpanda GmbH", home: "Oostenrijk" },
-  { name: "Trade Republic", entity: "Trade Republic Bank GmbH", home: "Duitsland" },
-  { name: "Bitstamp", entity: "Bitstamp Europe S.A.", home: "Luxemburg" },
-  { name: "Bybit", entity: "Bybit EU GmbH", home: "Oostenrijk" },
-  { name: "Coinbase", entity: "Coinbase Luxembourg S.A.", home: "Luxemburg" },
-  { name: "Kraken", entity: "Payward Europe Solutions Ltd", home: "Ierland" },
-  { name: "Robinhood", entity: "Robinhood Europe, UAB", home: "Litouwen" },
-  { name: "Gemini", entity: "Gemini Intergalactic EU Ltd", home: "Malta" },
-  { name: "Gate", entity: "Gate Technology Limited", home: "Malta" },
-  { name: "Clearstream", entity: "Clearstream Banking S.A.", home: "Luxemburg" },
-  { name: "FlatexDEGIRO", entity: "FlatexDEGIRO Bank AG", home: "Duitsland" },
-  { name: "Crypto Finance", entity: "Crypto Finance (DE) GmbH", home: "Duitsland" },
-];
-
-const C = {
-  navy: "#1B2A4A", navyLight: "#2C3E6B", accent: "#3B6BCC", accentLight: "#5B8DEF",
-  warm: "#D4883A", warmLight: "#E8A85C", green: "#2E7D5B", purple: "#7C3AED",
-  light: "#F7F8FA", border: "#E8EBF0", text: "#1B2A4A", textSub: "#6B7280",
-};
-
-const PIE_COLORS = [C.accent, C.navy, C.warm];
-const fmtFull = function(v) { return new Intl.NumberFormat("nl-NL").format(v); };
-
-// === COMPONENTS ===
-
-function ChartTooltip(props) {
-  if (!props.active || !props.payload || !props.payload.length) return null;
-  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" } },
-    h("div", { style: { fontWeight: 700, color: C.text, marginBottom: 4 } }, props.label),
-    props.payload.map(function(p, i) {
-      return h("div", { key: i, style: { color: C.textSub } },
-        (p.name === "value" ? "Aantal" : p.name) + ": ",
-        h("span", { style: { fontWeight: 600, color: C.text } }, fmtFull(p.value))
-      );
-    })
-  );
+function switchTab(name){
+  document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('tab-'+name).classList.add('active');
+  var map={overview:'Overzicht',nl:'NL-vergunningen',crossborder:'Cross-border',diensten:'Diensten'};
+  document.querySelectorAll('.tab-btn').forEach(function(b){if(b.textContent===map[name])b.classList.add('active')});
 }
 
-function PieTooltip(props) {
-  if (!props.active || !props.payload || !props.payload.length) return null;
-  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 13, fontFamily: "inherit", boxShadow: "0 4px 12px rgba(27,42,74,0.08)" } },
-    h("div", { style: { fontWeight: 700, color: C.text } }, props.payload[0].name),
-    h("div", { style: { color: C.textSub } }, props.payload[0].value + " partijen (" + Math.round(props.payload[0].value / 56 * 100) + "%)")
-  );
-}
+// NL table
+var tb1=document.getElementById('nl-tbody');
+nlCasps.forEach(function(c,i){
+  var tr=document.createElement('tr');
+  var col=c.t==='Art. 63'?'#3B6BCC':'#D4883A';
+  tr.innerHTML='<td style="color:#6B7280;font-size:13px">'+(i+1)+'</td><td style="font-weight:600;color:#1B2A4A">'+c.n+'</td><td><span class="badge" style="color:'+col+';background:'+col+'14">'+c.t+'</span></td>';
+  tb1.appendChild(tr);
+});
 
-function KPI(props) {
-  return h("div", { style: { background: C.light, border: "1px solid " + C.border, borderRadius: 10, padding: "16px 18px" } },
-    h("div", { style: { fontSize: 11, color: C.textSub, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 } }, props.label),
-    h("div", { style: { fontSize: 24, fontWeight: 700, color: props.color || C.text, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.02em" } }, props.value),
-    props.sub ? h("div", { style: { fontSize: 12, color: C.textSub, marginTop: 2 } }, props.sub) : null
-  );
-}
+// CB table
+var tb2=document.getElementById('cb-tbody');
+cbCasps.forEach(function(c){
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td style="font-weight:700;color:#1B2A4A">'+c.n+'</td><td style="color:#6B7280;font-size:13px">'+c.e+'</td><td><span class="badge" style="color:#7C3AED;background:#7C3AED14">'+c.h+'</span></td>';
+  tb2.appendChild(tr);
+});
 
-function Section(props) {
-  return h("div", { style: { marginTop: 32 } },
-    h("h2", { style: { fontSize: 17, fontWeight: 700, color: C.text, margin: "0 0 14px 0" } }, props.title),
-    props.children
-  );
-}
+// Origin chart
+var oc=document.getElementById('origin-chart');
+originData.forEach(function(d){
+  var col=document.createElement('div');col.className='vbar-col';
+  var pct=(d.v/11)*200;
+  col.innerHTML='<div class="vbar-val">'+d.v+'</div><div class="vbar-bar" style="height:'+pct+'px;background:#7C3AED"></div><div class="vbar-label">'+d.n+'</div>';
+  oc.appendChild(col);
+});
 
-function ChartBox(props) {
-  return h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: "20px 12px 12px 0" } },
-    h(ResponsiveContainer, { width: "100%", height: props.height || 340 }, props.children)
-  );
-}
-
-function Badge(props) {
-  return h("span", { style: { display: "inline-block", fontSize: 11, fontWeight: 600, color: props.color, background: props.color + "14", padding: "2px 8px", borderRadius: 4, letterSpacing: "0.02em" } }, props.text);
-}
-
-// Table header cell helper
-function Th(text) {
-  return h("th", { style: { textAlign: "left", padding: "12px 16px", fontWeight: 600, color: C.textSub, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid " + C.border } }, text);
-}
-
-// === TAB CONTENT ===
-
-function OverviewTab() {
-  return h("div", null,
-    // Pie chart section
-    h(Section, { title: "Verdeling vergunningtype" },
-      h("div", { style: { background: "#fff", border: "1px solid " + C.border, borderRadius: 10, padding: 24, display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" } },
-        h("div", { style: { width: 210, height: 210, flexShrink: 0 } },
-          h(ResponsiveContainer, { width: "100%", height: "100%" },
-            h(PieChart, null,
-              h(Pie, { data: authTypeData, dataKey: "value", cx: "50%", cy: "50%", outerRadius: 88, innerRadius: 52, paddingAngle: 4, strokeWidth: 0 },
-                authTypeData.map(function(_, i) { return h(Cell, { key: i, fill: PIE_COLORS[i] }); })
-              ),
-              h(Tooltip, { content: h(PieTooltip) })
-            )
-          )
-        ),
-        h("div", { style: { flex: 1, minWidth: 260 } },
-          authTypeData.map(function(d, i) {
-            return h("div", { key: i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i < 2 ? "1px solid " + C.border : "none" } },
-              h("span", { style: { width: 10, height: 10, borderRadius: 3, background: PIE_COLORS[i], flexShrink: 0 } }),
-              h("div", { style: { flex: 1 } },
-                h("div", { style: { fontSize: 14, fontWeight: 600, color: C.text } }, d.name),
-                h("div", { style: { fontSize: 12, color: C.textSub } }, d.value + " partijen")
-              ),
-              h("div", { style: { fontSize: 20, fontWeight: 700, color: PIE_COLORS[i], fontVariantNumeric: "tabular-nums" } }, Math.round(d.value / 56 * 100) + "%")
-            );
-          })
-        )
-      )
-    ),
-    // Origin bar chart
-    h(Section, { title: "Cross-border: herkomst per EU-lidstaat" },
-      h(ChartBox, { height: 300 },
-        h(BarChart, { data: originData, margin: { top: 8, right: 16, left: 8, bottom: 4 } },
-          h(CartesianGrid, { strokeDasharray: "3 3", stroke: C.border, vertical: false }),
-          h(XAxis, { dataKey: "name", tick: { fill: C.textSub, fontSize: 12 }, tickLine: false, axisLine: { stroke: C.border } }),
-          h(YAxis, { tick: { fill: C.textSub, fontSize: 11 }, tickLine: false, axisLine: false, width: 30, allowDecimals: false }),
-          h(Tooltip, { content: h(ChartTooltip) }),
-          h(Bar, { dataKey: "value", name: "CASPs", fill: C.purple, radius: [4, 4, 0, 0], maxBarSize: 48 })
-        )
-      ),
-      h("p", { style: { fontSize: 13, color: C.textSub, marginTop: 8 } }, "Duitsland is veruit het belangrijkste herkomstland voor cross-border CASPs, gevolgd door Frankrijk en Malta.")
-    )
-  );
-}
-
-function NLTab() {
-  return h("div", null,
-    h(Section, { title: "Nederlandse CASP-vergunninghouders (23)" },
-      h("div", { style: { border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" } },
-        h("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14 } },
-          h("thead", null,
-            h("tr", { style: { background: C.light } }, Th("#"), Th("Naam"), Th("Type"))
-          ),
-          h("tbody", null,
-            nlCasps.map(function(c, i) {
-              return h("tr", { key: i, style: { borderBottom: i < nlCasps.length - 1 ? "1px solid " + C.border : "none" } },
-                h("td", { style: { padding: "10px 16px", color: C.textSub, fontSize: 13 } }, i + 1),
-                h("td", { style: { padding: "10px 16px", fontWeight: 600, color: C.text } }, c.name),
-                h("td", { style: { padding: "10px 16px" } },
-                  h(Badge, { text: c.type, color: c.type === "Art. 63" ? C.accent : C.warm })
-                )
-              );
-            })
-          )
-        )
-      ),
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginTop: 16 } },
-        h(KPI, { label: "Art. 63 \u2014 Vergunning", value: "19", sub: "volledige MiCAR-vergunning", color: C.accent }),
-        h(KPI, { label: "Art. 60 \u2014 Notificatie", value: "4", sub: "overgangsregeling bestaande partijen", color: C.warm })
-      )
-    )
-  );
-}
-
-function CrossBorderTab() {
-  return h("div", null,
-    h(Section, { title: "Cross-border CASPs actief in Nederland (32)" },
-      h("p", { style: { fontSize: 14, color: C.textSub, marginBottom: 16 } }, "Selectie van de belangrijkste cross-border partijen met EU-paspoort (Art. 65 MiCAR)."),
-      h("div", { style: { border: "1px solid " + C.border, borderRadius: 10, overflow: "hidden" } },
-        h("table", { style: { width: "100%", borderCollapse: "collapse", fontSize: 14 } },
-          h("thead", null,
-            h("tr", { style: { background: C.light } }, Th("Handelsnaam"), Th("Entiteit"), Th("Herkomst"))
-          ),
-          h("tbody", null,
-            cbCasps.map(function(c, i) {
-              return h("tr", { key: i, style: { borderBottom: i < cbCasps.length - 1 ? "1px solid " + C.border : "none" } },
-                h("td", { style: { padding: "10px 16px", fontWeight: 700, color: C.text } }, c.name),
-                h("td", { style: { padding: "10px 16px", color: C.textSub, fontSize: 13 } }, c.entity),
-                h("td", { style: { padding: "10px 16px" } },
-                  h(Badge, { text: c.home, color: C.purple })
-                )
-              );
-            })
-          )
-        )
-      )
-    )
-  );
-}
-
-function DienstenTab() {
-  return h("div", null,
-    h(Section, { title: "Crypto-asset diensten (Art. 3(1)(16) MiCAR)" },
-      h("p", { style: { fontSize: 14, color: C.textSub, marginBottom: 16 } }, "Aantal CASPs dat elke dienst aanbiedt. Meerdere diensten per partij mogelijk."),
-      h(ChartBox, { height: 400 },
-        h(BarChart, { data: servicesData, layout: "vertical", margin: { top: 4, right: 24, left: 8, bottom: 4 } },
-          h(CartesianGrid, { strokeDasharray: "3 3", stroke: C.border, horizontal: false }),
-          h(XAxis, { type: "number", tick: { fill: C.textSub, fontSize: 11 }, tickLine: false, axisLine: { stroke: C.border }, allowDecimals: false }),
-          h(YAxis, { dataKey: "short", type: "category", width: 120, tick: { fill: C.text, fontSize: 12 }, tickLine: false, axisLine: false }),
-          h(Tooltip, { content: h(ChartTooltip) }),
-          h(Bar, { dataKey: "value", name: "CASPs", fill: C.green, radius: [0, 4, 4, 0], maxBarSize: 26 })
-        )
-      ),
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 16 } },
-        h(KPI, { label: "Meest aangeboden", value: "Custody", sub: "& transfer services (42\u00D7)", color: C.green }),
-        h(KPI, { label: "Exchange diensten", value: "34", sub: "crypto-to-fiat", color: C.accent }),
-        h(KPI, { label: "Minst aangeboden", value: "Advies", sub: "slechts 4 partijen", color: C.warm })
-      )
-    )
-  );
-}
-
-// === MAIN APP ===
-
-function App() {
-  var tabState = useState("overview");
-  var tab = tabState[0];
-  var setTab = tabState[1];
-
-  var tabs = [
-    { key: "overview", label: "Overzicht" },
-    { key: "nl", label: "NL-vergunningen" },
-    { key: "crossborder", label: "Cross-border" },
-    { key: "diensten", label: "Diensten" },
-  ];
-
-  return h("div", { style: { minHeight: "100vh", background: "#fff", fontFamily: "'Source Sans 3', sans-serif", color: C.text, display: "flex", flexDirection: "column", alignItems: "center" } },
-
-    // Hero
-    h("div", { style: { width: "100%", background: "linear-gradient(135deg, " + C.navy + " 0%, #1E3A5F 50%, " + C.purple + " 100%)", padding: "48px 32px 40px", display: "flex", justifyContent: "center" } },
-      h("div", { style: { maxWidth: 880, width: "100%" } },
-        h("div", { style: { display: "flex", gap: 8, marginBottom: 14 } },
-          h("span", { style: { fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" } }, "AFM Register"),
-          h("span", { style: { fontSize: 11, fontWeight: 600, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 4, letterSpacing: "0.05em", textTransform: "uppercase" } }, "MiCAR")
-        ),
-        h("h1", { style: { fontSize: 28, fontWeight: 700, color: "#fff", margin: "0 0 8px 0", letterSpacing: "-0.02em", lineHeight: 1.2 } }, "Register Crypto-Asset Service Providers"),
-        h("p", { style: { color: "rgba(255,255,255,0.7)", fontSize: 15, margin: 0 } }, "Overzicht van alle in Nederland geregistreerde en actieve CASPs onder MiCAR \u00B7 peildatum 12 februari 2026")
-      )
-    ),
-
-    h("div", { style: { maxWidth: 880, width: "100%", padding: "0 32px" } },
-
-      // KPIs
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginTop: -20, position: "relative", zIndex: 1 } },
-        h(KPI, { label: "Totaal CASPs", value: "56", color: C.navy }),
-        h(KPI, { label: "NL-vergunningen", value: "23", sub: "Art. 63 & Art. 60", color: C.accent }),
-        h(KPI, { label: "Cross-border", value: "32", sub: "EU-paspoort Art. 65", color: C.purple }),
-        h(KPI, { label: "Herkomstlanden", value: "8", sub: "incl. Nederland", color: C.warm })
-      ),
-
-      // Tabs
-      h("div", { style: { display: "flex", gap: 0, borderBottom: "1px solid " + C.border, marginTop: 32, overflowX: "auto" } },
-        tabs.map(function(t) {
-          return h("button", {
-            key: t.key,
-            onClick: function() { setTab(t.key); },
-            style: {
-              padding: "10px 18px", border: "none", cursor: "pointer", fontSize: 14, fontFamily: "inherit", fontWeight: 600, whiteSpace: "nowrap",
-              color: tab === t.key ? C.accent : C.textSub, background: "transparent",
-              borderBottom: tab === t.key ? "2px solid " + C.accent : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }
-          }, t.label);
-        })
-      ),
-
-      // Tab content
-      tab === "overview" ? h(OverviewTab) : null,
-      tab === "nl" ? h(NLTab) : null,
-      tab === "crossborder" ? h(CrossBorderTab) : null,
-      tab === "diensten" ? h(DienstenTab) : null,
-
-      // Footer
-      h("div", { style: { marginTop: 40, paddingTop: 16, paddingBottom: 32, borderTop: "1px solid " + C.border, display: "flex", justifyContent: "space-between" } },
-        h("span", { style: { fontSize: 12, color: C.textSub } }, "Bron: AFM Register Crypto-Asset Service Providers"),
-        h("span", { style: { fontSize: 12, color: "#d1d5db" } }, "Peildatum: 12 feb 2026")
-      )
-    )
-  );
-}
-
-ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+// Services chart
+var sc=document.getElementById('services-chart');
+servicesData.forEach(function(d){
+  var row=document.createElement('div');row.className='bar-row';
+  var pct=(d.v/42)*100;
+  row.innerHTML='<div class="bar-label">'+d.s+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:#2E7D5B"></div></div><div class="bar-val">'+d.v+'</div>';
+  sc.appendChild(row);
+});
 </script>
 </body>
 </html>
